@@ -382,7 +382,7 @@ async function nerdGetStudent(createIfMissing=true){
           <div class="field"><label>Supervisor Name</label><input id="supervisorName" required></div>
           <div class="field"><label>Supervisor Email</label><input id="supervisorEmail" type="email" required></div>
         </div>
-        <div class="alert-box alert-warning">Registration requires a ₦2,500 registration payment after this form is completed.</div>
+        <div class="alert-box alert-warning"></div>
         <div class="workflow-actions"><button class="gray-btn" onclick="show('profile')">Back</button><button class="green-btn registration-payment-continue" onclick="completeRegistration()">Continue to Registration Payment</button></div>
       </div>
     </div>
@@ -402,7 +402,7 @@ async function nerdGetStudent(createIfMissing=true){
     <div class="panel payment-panel">
       <h3>Complete Registration Payment</h3>
       <div class="amount-big">₦2,500</div>
-      <div class="payment-note"><b>Registration Fee:</b> ₦2,500<br><br>This payment is for student registration. After successful payment, your student dashboard becomes available.</div>
+      <div class="payment-note"><b>Registration Fee:</b> ₦2,500<br><br>Payment is for student enrollment.</div>
       <div id="registrationPaymentAlert"></div>
       <button id="registrationPayBtn" class="primary" onclick="completeRegistrationPayment()">Pay ₦2,500 Registration Fee</button>
     </div>
@@ -574,8 +574,7 @@ async function nerdGetStudent(createIfMissing=true){
   <div class="card">
     <h2 style="margin-bottom:20px">Contact NERD</h2>
     <p style="text-align:center;color:#60656b;line-height:1.7">
-      For support with self registration, registration, project submission,
-      or access to NERD services, contact your designated NERD support channel.
+      Email: support@ned.gov.ng Phone: +234 806 004 9489.
     </p>
     <div class="alert-box alert-info">
       The student workflow uses a ₦2,500 registration payment and a ₦4,800
