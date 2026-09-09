@@ -1054,7 +1054,7 @@ async function startFlutterwavePayment(paymentType,amount,buttonId,alertId){
       created_at:Date.now()
     }));
 
-    populateFlutterwaveTransfer(data,paymentType,amount);
+    window.populateFlutterwaveTransfer(data,paymentType,amount);
     show("flutterwaveTransfer");
   }catch(error){
     console.error("Flutterwave payment error:",error);
@@ -1065,6 +1065,78 @@ async function startFlutterwavePayment(paymentType,amount,buttonId,alertId){
     if(btn){
       btn.disabled=false;
       btn.textContent=btn.dataset.originalText||btn.textContent;
+    }
+  }
+}
+
+window.populateFlutterwaveTransfer = function(data,paymentType,amount){
+  data = data || {};
+  paymentType = paymentType === "project" ? "project" : "registration";
+  amount = Number(amount || data.amount || (paymentType === "project" ? 4800 : 2500));
+  const title=document.getElementById("transferTitle");
+  const amountEl=document.getElementById("transferAmount");
+  const beneficiary=document.getElementById("flwBeneficiary");
+  const bank=document.getElementById("flwBankName");
+  const account=document.getElementById("flwAccountNumber");
+  const transferAmount=document.getElementById("flwTransferAmount");
+  const back=document.getElementById("transferBackBtn");
+  const alert=document.getElementById("transferPaymentAlert");
+
+  if(title)title.textContent=paymentType==="project"?"Complete Project Upload Payment":"Complete Registration Payment";
+  if(amountEl)amountEl.textContent="₦"+Number(data?.amount||amount).toLocaleString();
+  if(beneficiary)beneficiary.textContent=data?.beneficiary_name||"NERD";
+  if(bank)bank.textContent=data?.bank_name||"—";
+  if(account)account.textContent=data?.account_number||"—";
+  if(transferAmount)transferAmount.textContent="₦"+Number(data?.amount||amount).toLocaleString();
+  if(back)back.textContent=paymentType==="project"?"← Back to Project Payment":"← Back to Registration Payment";
+  if(alert)alert.innerHTML="";
+
+  const s=document.getElementById("transferStepPayment");
+  const d=document.getElementById("transferStepDashboard");
+  const pr=document.getElementById("transferStepProject");
+  if(s)s.className="workflow-step active";
+  if(d)d.className=paymentType==="project"?"workflow-step done":"workflow-step";
+  if(pr)pr.className=paymentType==="project"?"workflow-step active":"workflow-step";
+};
+
+async function checkFlutterwaveTransfer(){
+  const button=document.querySelector('.transfer-confirm');
+  const alertEl=document.getElementById('transferPaymentAlert');
+
+  try{
+    const pendingRaw=localStorage.getItem('nerd_pending_flutterwave');
+    const pending=pendingRaw?JSON.parse(pendingRaw):null;
+
+    if(!pending?.tx_ref || !pending?.payment_type){
+      if(alertEl)alertEl.innerHTML='<div class="alert-box alert-warning">No pending Flutterwave payment was found. Please start the payment again.</div>';
+      return;
+    }
+
+    const paymentType=pending.payment_type;
+    const transactionId=pending.transaction_id||null;
+    const txRef=pending.tx_ref;
+
+    if(button){
+      button.disabled=true;
+      button.dataset.originalText=button.textContent;
+      button.textContent='Checking Payment...';
+    }
+
+    if(alertEl)alertEl.innerHTML='<div class="alert-box alert-info">Checking your payment with Flutterwave. Please wait...</div>';
+
+    await verifyFlutterwavePayment(
+      paymentType,
+      transactionId,
+      txRef,
+      button,
+      alertEl
+    );
+  }catch(error){
+    console.error('Flutterwave transfer check error:',error);
+    if(alertEl)alertEl.innerHTML='<div class="alert-box alert-warning">'+(error?.message||'Unable to check your payment. Please try again.')+'</div>';
+    if(button){
+      button.disabled=false;
+      button.textContent=button.dataset.originalText||'I\'ve Made the Transfer';
     }
   }
 }
@@ -1144,7 +1216,7 @@ async function handleFlutterwaveReturn(){
   show("flutterwaveTransfer");
 
   const pending=JSON.parse(localStorage.getItem("nerd_pending_flutterwave")||"null");
-  populateFlutterwaveTransfer({
+  window.populateFlutterwaveTransfer({
     amount:pending?.amount||(paymentType==="project"?4800:2500),
     beneficiary_name:pending?.beneficiary_name||"NERD",
     bank_name:pending?.bank_name||"Flutterwave MFB",
@@ -1325,7 +1397,7 @@ async function loginStudent(){
       if(pendingFlutterwave?.student_id===data.session.user.id &&
          ((pendingFlutterwave.payment_type==="registration" && !portalData.registrationPaid) ||
           (pendingFlutterwave.payment_type==="project" && !portalData.projectPaymentPaid))){
-        populateFlutterwaveTransfer(pendingFlutterwave,pendingFlutterwave.payment_type,pendingFlutterwave.amount);
+        window.populateFlutterwaveTransfer(pendingFlutterwave,pendingFlutterwave.payment_type,pendingFlutterwave.amount);
         show("flutterwaveTransfer");
       }
       else if(portalData.projectSubmitted)show("projectSuccess");
@@ -1390,7 +1462,7 @@ async function initializeNERD(){
       if(pendingFlutterwave?.student_id===session.user.id &&
          ((pendingFlutterwave.payment_type==="registration" && !portalData.registrationPaid) ||
           (pendingFlutterwave.payment_type==="project" && !portalData.projectPaymentPaid))){
-        populateFlutterwaveTransfer(pendingFlutterwave,pendingFlutterwave.payment_type,pendingFlutterwave.amount);
+        window.populateFlutterwaveTransfer(pendingFlutterwave,pendingFlutterwave.payment_type,pendingFlutterwave.amount);
         show("flutterwaveTransfer");
       }
       else if(portalData.projectSubmitted)show("projectSuccess");
