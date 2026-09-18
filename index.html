@@ -403,16 +403,23 @@ async function nerdGetStudent(createIfMissing=true){
   <div id="maintenancePopup" class="maintenance-overlay" role="dialog" aria-modal="true" aria-labelledby="maintenanceTitle">
     <div class="maintenance-popup">
       <button class="maintenance-x" type="button" aria-label="Close maintenance notice" onclick="closeMaintenancePopup()">×</button>
-      <div class="maintenance-icon" aria-hidden="true">🚧</div>
-      <h2 id="maintenanceTitle">NERD PORTAL MAINTENANCE</h2>
-      <p>
-        The portal is currently undergoing maintenance and will be
-        <strong>back active by October 1st, 2026.</strong>
-      </p>
-      <p>We apologize for the inconvenience this might have caused you.</p>
-      <button class="maintenance-close" type="button" onclick="openMaintenancePopup()">Continue</button>
-    </div>
+      <!-- NERD PORTAL MAINTENANCE POPUP -->
+<div class="maintenance-overlay">
+  <div class="maintenance-popup">
+    <div class="maintenance-icon">🔧</div>
+
+    <h2>Portal Under Maintenance</h2>
+
+    <p>
+      The portal is currently undergoing maintenance and will be back online 
+      <strong>Thursday October 1st,2026.</strong>
+    </p>
+
+    <p>
+      We apologize for the inconvenience this might have caused you.
+    </p>
   </div>
+</div>
 
 </section>
 
